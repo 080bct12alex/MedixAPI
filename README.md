@@ -7,6 +7,17 @@ This is a beginner-friendly project designed to learn how to build RESTful APIs 
 
 ---
 
+## 🌐 Live Docs
+
+You can explore and test the API using the live Swagger documentation hosted here:
+
+**[https://medixapi.onrender.com/docs](https://medixapi.onrender.com/docs)**
+
+This is the deployed version of the Patient Management System API, fully functional and ready to use.
+
+## 🌍 **Frontend Website:**  
+  [https://medix-neon.vercel.app](https://medix-neon.vercel.app) 
+
 ## ✅ Features
 
 - 📋 View all patients
