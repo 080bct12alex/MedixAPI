@@ -42,7 +42,8 @@ This is the deployed version of the Patient Management System API, fully functio
 - Frontend (React/Next.js)
 
 ## Notes for Improvement
-- Migrating from patients.json to a real database (like MongoDB or PostgreSQL) 
+- Migrating from patients.json to a real database (like MongoDB or PostgreSQL)
+- Use of a Dockerfile ensures the application runs in a consistent and isolated environment, helping to avoid conflicts and making deployment easier and more reliable.
 
 ---
 
