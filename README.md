@@ -1,6 +1,6 @@
-# 🧠 Patient Management System API (FastAPI Learning Project)
+# 🧠 Patient Management System  (FastAPI Learning Project)
 
-This is a beginner-friendly project designed to learn how to build RESTful APIs using **FastAPI**. It simulates a real-world use case of managing patient health records, including BMI calculations and automatic health verdicts. Data is stored in a local JSON file (`patients.json`).
+This is a beginner-friendly project designed to learn how to build RESTful APIs using **FastAPI**. It simulates a real-world use case of managing patient health records, including BMI calculations and automatic health verdicts. Data is stored in a local JSON file (`patients.json`). 
 
 
 📌 This project is ideal for those transitioning from **Flask to FastAPI**, or learning modern Python API development.
@@ -40,6 +40,9 @@ This is the deployed version of the Patient Management System API, fully functio
 - **Data Storage:** `patients.json` file
 - **Tools:** Uvicorn (ASGI server), Pydantic (for validation)
 - Frontend (React/Next.js)
+
+## Notes for Improvement
+- Migrating from patients.json to a real database (like MongoDB or PostgreSQL) 
 
 ---
 
