@@ -1,6 +1,6 @@
 
 from beanie import Document
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from typing import Literal, Optional
 
 class Patient(Document):
@@ -13,11 +13,13 @@ class Patient(Document):
     weight: float = Field(..., gt=0, description='Weight of the patient in kgs')
     doctor_id: str = Field(..., description='ID of the doctor')
 
+    @computed_field
     @property
     def bmi(self) -> float:
         bmi = round(self.weight/(self.height**2),2)
         return bmi
     
+    @computed_field
     @property
     def verdict(self) -> str:
 
