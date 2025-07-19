@@ -6,7 +6,6 @@ This is a beginner-friendly project designed to learn how to build RESTful APIs 
 📌 This project is ideal for those transitioning from **Flask to FastAPI**, or learning modern Python API development.
 
 ---
-
 ## 🌐 Live Docs
 
 You can explore and test the API using the live Swagger documentation hosted here:
