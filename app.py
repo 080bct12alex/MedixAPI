@@ -1,3 +1,8 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
+
 from fastapi import FastAPI, Path, HTTPException, Query, Depends
 from fastapi.responses import JSONResponse
 from typing import Annotated, Literal, Optional
@@ -6,9 +11,9 @@ from contextlib import asynccontextmanager
 import pymongo
 
 from database import init_db
+from auth import create_access_token, authenticate_user, get_current_user, get_current_doctor, verify_password, get_password_hash
 from models.patient import Patient, PatientUpdate
 from models.doctor import Doctor, DoctorCreate
-from auth import create_access_token, get_current_doctor, get_password_hash, verify_password
 
 
 @asynccontextmanager
@@ -30,7 +35,7 @@ app.add_middleware(
 
 @app.post("/register")
 async def register_doctor(doctor: DoctorCreate):
-    existing_doctor = await Doctor.find_one({"username": doctor.username})
+    existing_doctor = await Doctor.find_one(Doctor.username == doctor.username)
     if existing_doctor:
         raise HTTPException(status_code=400, detail="Username already registered")
     hashed_password = get_password_hash(doctor.password)
@@ -72,9 +77,9 @@ async def view_patient(patient_id: str = Path(..., description='ID of the patien
     return patient
 
 @app.get('/sort')
-async def sort_patients(sort_by: str = Query(..., description='Sort on the basis of height, weight or bmi'), order: str = Query('asc', description='sort in asc or desc order'), current_doctor: str = Depends(get_current_doctor)):
+async def sort_patients(sort_by: str = Query(..., description='Sort on the basis of height, weight, age or _id'), order: str = Query('asc', description='sort in asc or desc order'), current_doctor: str = Depends(get_current_doctor)):
 
-    valid_fields = ['height', 'weight', 'bmi']
+    valid_fields = ['height', 'weight', 'age', '_id']
 
     if sort_by not in valid_fields:
         raise HTTPException(status_code=400, detail=f'Invalid field select from {valid_fields}')
@@ -111,7 +116,7 @@ async def update_patient(patient_id: str, patient_update: PatientUpdate, current
     if not patient or patient.doctor_id != current_doctor:
         raise HTTPException(status_code=404, detail='Patient not found')
     
-    patient_update_dict = patient_update.dict(exclude_unset=True)
+    patient_update_dict = patient_update.model_dump(exclude_unset=True)
 
     for key, value in patient_update_dict.items():
         setattr(patient, key, value)

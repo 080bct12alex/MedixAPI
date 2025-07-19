@@ -3,8 +3,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
+import os
+import bcrypt
 
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -24,6 +26,16 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+async def authenticate_user(username: str, password: str):
+    # This is a placeholder. In a real application, you would verify the username and password against your database.
+    # For now, it always returns True.
+    return True
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    # This is a placeholder. In a real application, you would retrieve the user based on the token.
+    # For now, it returns a dummy user.
+    return {"username": "test_user"}
 
 def get_current_doctor(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
