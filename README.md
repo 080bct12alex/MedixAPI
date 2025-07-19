@@ -18,7 +18,7 @@ This is the deployed version of the Patient Management System API, fully functio
   [https://medix-neon.vercel.app](https://medix-neon.vercel.app) 
 
 ##  💻 **Frontend GitHub Repository:**  
-  [https://github.com/080bct12alex/MedixUI](https://github.com/080bct12alex/MedixUI)
+  [https://github.com/080bct12alex/MedixUI_using_MedixAPI_Beginner](https://github.com/080bct12alex/MedixUI)
 
 ## ✅ Features
 
