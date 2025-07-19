@@ -30,7 +30,7 @@ app.add_middleware(
 
 @app.post("/register")
 async def register_doctor(doctor: DoctorCreate):
-    existing_doctor = await Doctor.find_one(Doctor.username == doctor.username)
+    existing_doctor = await Doctor.find_one({"username": doctor.username})
     if existing_doctor:
         raise HTTPException(status_code=400, detail="Username already registered")
     hashed_password = get_password_hash(doctor.password)
@@ -111,7 +111,7 @@ async def update_patient(patient_id: str, patient_update: PatientUpdate, current
     if not patient or patient.doctor_id != current_doctor:
         raise HTTPException(status_code=404, detail='Patient not found')
     
-    patient_update_dict = patient_update.model_dump(exclude_unset=True)
+    patient_update_dict = patient_update.dict(exclude_unset=True)
 
     for key, value in patient_update_dict.items():
         setattr(patient, key, value)
