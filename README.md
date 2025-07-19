@@ -37,30 +37,32 @@ This is  project designed to learn how to build RESTful APIs using **FastAPI**. 
 - JWT-based login using real password authentication, where the doctor ID in the token is used to authorize patient data operations
 use passlib for password hashing ,PyJWT for creating and verifying JWTs
 
+- ADD pytest for allowing  simple, scalable test writing and execution ,improves code reliability and makes it easier to catch bugs early.
+
+
 
 ## Notes for Improvement
 
-1. ADD pytest for allowing  simple, scalable test writing and execution ,improves code reliability and makes it easier to catch bugs early.
 
-2. Improve Code Quality with Linting & Formatting
+1. Improve Code Quality with Linting & Formatting
        * installed ruff, b used it to
          check and format the code.
 
 
 
-   3. Organize Endpoints with API Routers
+   2. Organize Endpoints with API Routers
        * What: Your app.py file will get crowded as you add more endpoints. We can
          split the patient-related and doctor-related endpoints into separate files
          (e.g., routers/patients.py, routers/auth.py) to keep the code clean and
          modular.
 
-   4. Enhance Configuration Management
+   3. Enhance Configuration Management
        * What: Currently, you load environment variables directly in app.py. We can
          create a dedicated, type-safe config.py file using Pydantic's BaseSettings.
          This validates your settings on startup (like ensuring DATABASE_URL is set)
          and provides better autocompletion.
 
-   5. Set Up a CI/CD Pipeline
+   4. Set Up a CI/CD Pipeline
         * What: This is a professional best practice. We can create a GitHub Actions
          workflow that automatically runs your tests and linter every time you push
          new code. This acts as a gatekeeper to ensure that no broken or poorly

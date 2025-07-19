@@ -36,6 +36,16 @@ class Patient(Document):
         name = "patients"
 
 
+class PatientCreate(BaseModel):
+    id: str = Field(..., description='ID of the patient', examples=['P001'])
+    name: str = Field(..., description='Name of the patient')
+    city: str = Field(..., description='City where the patient is living')
+    age: int = Field(..., gt=0, lt=120, description='Age of the patient')
+    gender: Literal['male', 'female', 'others'] = Field(..., description='Gender of the patient')
+    height: float = Field(..., gt=0, description='Height of the patient in mtrs')
+    weight: float = Field(..., gt=0, description='Weight of the patient in kgs')
+
+
 class PatientUpdate(BaseModel):
     name: Optional[str] = Field(default=None)
     city: Optional[str] = Field(default=None)

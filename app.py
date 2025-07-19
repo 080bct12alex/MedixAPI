@@ -12,7 +12,7 @@ import pymongo
 
 from database import init_db
 from auth import create_access_token, authenticate_user, get_current_user, get_current_doctor, verify_password, get_password_hash
-from models.patient import Patient, PatientUpdate
+from models.patient import Patient, PatientUpdate, PatientCreate
 from models.doctor import Doctor, DoctorCreate
 
 
@@ -70,7 +70,7 @@ async def view(current_doctor: str = Depends(get_current_doctor)):
     return data
 
 @app.get('/patient/{patient_id}')
-async def view_patient(patient_id: str = Path(..., description='ID of the patient in the DB', example='P001'), current_doctor: str = Depends(get_current_doctor)):
+async def view_patient(patient_id: str = Path(..., description='ID of the patient in the DB', examples=['P001']), current_doctor: str = Depends(get_current_doctor)):
     patient = await Patient.get(patient_id)
     if not patient or patient.doctor_id != current_doctor:
         raise HTTPException(status_code=404, detail='Patient not found')
@@ -94,14 +94,14 @@ async def sort_patients(sort_by: str = Query(..., description='Sort on the basis
     return sorted_data
 
 @app.post('/create')
-async def create_patient(patient: Patient, current_doctor: str = Depends(get_current_doctor)):
+async def create_patient(patient_data: PatientCreate, current_doctor: str = Depends(get_current_doctor)):
 
     # check if the patient already exists
-    existing_patient = await Patient.get(patient.id)
+    existing_patient = await Patient.get(patient_data.id)
     if existing_patient:
         raise HTTPException(status_code=400, detail='Patient already exists')
 
-    patient.doctor_id = current_doctor
+    patient = Patient(**patient_data.model_dump(), doctor_id=current_doctor)
     # new patient add to the database
     await patient.create()
 
