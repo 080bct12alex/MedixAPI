@@ -26,4 +26,7 @@ jobs:
     - name: Run Ruff Linting
       run: ruff check .
     - name: Run Tests
-      run: pytest
+      run: |
+        export DATABASE_URL="mongodb://localhost:27017/testdb"
+        export SECRET_KEY="secret-key"
+        pytest
