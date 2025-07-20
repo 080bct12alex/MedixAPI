@@ -92,7 +92,7 @@ async def group_patients_by_condition(current_doctor: str = Depends(get_current_
 async def filter_patients(
     disease_name: Optional[str] = Query(None, description="Filter by disease name"),
     condition: Optional[str] = Query(None, description="Filter by disease condition"),
-    diagnosed_after_months: Optional[int] = Query(None, description="Filter by diagnoses in the last X months"),
+    diagnosed_after_months: Optional[str] = Query(None, description="Filter by diagnoses in the last X months"),
     current_doctor: str = Depends(get_current_doctor)
 ):
     query = Patient.find(Patient.doctor_id == current_doctor)
@@ -103,14 +103,13 @@ async def filter_patients(
     if condition:
         query = query.find({"diagnoses_history.condition": condition})
 
-    if diagnosed_after_months is not None:
-        # Convert empty string to None for diagnosed_after_months if it comes as empty string from frontend
-        if isinstance(diagnosed_after_months, str) and diagnosed_after_months == "":
-            diagnosed_after_months = None
-
-    if diagnosed_after_months is not None:
-        from_date = date.today() - timedelta(days=diagnosed_after_months * 30) # Approximate months
-        query = query.find({"diagnoses_history.diagnosis_on": {"$gte": from_date}})
+    if diagnosed_after_months:
+        try:
+            diagnosed_after_months_int = int(diagnosed_after_months)
+            from_date = date.today() - timedelta(days=diagnosed_after_months_int * 30) # Approximate months
+            query = query.find({"diagnoses_history.diagnosis_on": {"$gte": from_date}})
+        except ValueError:
+            raise HTTPException(status_code=400, detail="diagnosed_after_months must be an integer")
 
     filtered_data = await query.to_list()
     return filtered_data
