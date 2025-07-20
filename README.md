@@ -5,6 +5,21 @@ A **FastAPI**-powered RESTful backend simulates a real-world use case of managin
     📌 Began as a FastAPI learning journey Project , evolved into a production-ready backend project.
 
 
+## 🌐 Live Docs
+
+You can explore and test the API using the live Swagger documentation hosted here:
+
+**[https://medixapi.onrender.com/docs](https://medixapi.onrender.com/docs)**
+
+This is the deployed version of the Patient Management System API, fully functional and ready to use.
+
+## 🌍 **Frontend Website:**  
+  [https://medix-neon.vercel.app](https://medix-neon.vercel.app) 
+
+##  💻 **Frontend GitHub Repository:**  
+  [https://github.com/080bct12alex/MedixUI](https://github.com/080bct12alex/MedixUI)
+
+
 
 ## ✅ Key Features
 
