@@ -8,7 +8,7 @@ from unittest.mock import patch
 from beanie import init_beanie
 
 from app import app
-from auth import get_current_doctor, get_password_hash
+from auth import get_current_doctor
 from models.doctor import Doctor
 from models.patient import Patient
 
