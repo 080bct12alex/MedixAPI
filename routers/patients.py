@@ -2,7 +2,7 @@ from fastapi import APIRouter, Path, HTTPException, Query, Depends
 from fastapi.responses import JSONResponse
 import pymongo
 
-from auth import get_current_doctor
+from services.auth import get_current_doctor
 from models.patient import Patient, PatientUpdate, PatientCreate
 
 router = APIRouter()
