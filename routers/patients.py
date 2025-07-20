@@ -98,7 +98,7 @@ async def filter_patients(
     query = Patient.find(Patient.doctor_id == current_doctor)
 
     if disease_name:
-        query = query.find({"diagnoses_history.disease": disease_name})
+        query = query.find({"diagnoses_history.disease": {"$regex": disease_name, "$options": "i"}})
     
     if condition:
         query = query.find({"diagnoses_history.condition": condition})
