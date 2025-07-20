@@ -104,6 +104,11 @@ async def filter_patients(
         query = query.find({"diagnoses_history.condition": condition})
 
     if diagnosed_after_months is not None:
+        # Convert empty string to None for diagnosed_after_months if it comes as empty string from frontend
+        if isinstance(diagnosed_after_months, str) and diagnosed_after_months == "":
+            diagnosed_after_months = None
+
+    if diagnosed_after_months is not None:
         from_date = date.today() - timedelta(days=diagnosed_after_months * 30) # Approximate months
         query = query.find({"diagnoses_history.diagnosis_on": {"$gte": from_date}})
 
