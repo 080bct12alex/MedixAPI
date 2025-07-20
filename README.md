@@ -2,7 +2,7 @@
 
 A **FastAPI**-powered RESTful backend simulates a real-world use case of managing patient health records, including BMI calculations and automatic health verdicts with doctor-based data isolation, and a secure JWT-based login system — ideal for **Flask transitioning to FastAPI** or learning  scalable modern Python APIs development.
 
-    📌 Began as a FastAPI learning journey Project but evolved into a production-ready backend project.
+    📌 Began as a FastAPI learning journey Project , evolved into a production-ready backend project.
 
 
 
