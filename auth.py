@@ -3,10 +3,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
-import os
-import bcrypt
+from config import Settings
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+settings = Settings()
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

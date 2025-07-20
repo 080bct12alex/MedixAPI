@@ -7,7 +7,8 @@ from unittest.mock import patch
 
 from beanie import init_beanie
 
-from app import app, get_current_doctor
+from app import app
+from auth import get_current_doctor, get_password_hash
 from models.doctor import Doctor
 from models.patient import Patient
 
@@ -53,9 +54,9 @@ def test_about(client):
 @pytest.mark.asyncio
 async def test_register_doctor_success(client):
     # Patch the password hashing function as we don't need to test its logic
-    with patch("app.get_password_hash") as mock_hash:
+    with patch("routers.auth.get_password_hash") as mock_hash:
         mock_hash.return_value = "hashed_password"
-        response = client.post("/register", json={"username": "testuser", "password": "testpassword"})
+        response = client.post("/auth/register", json={"username": "testuser", "password": "testpassword"})
         
         assert response.status_code == 200
         assert response.json() == {"message": "Doctor registered successfully"}
@@ -71,7 +72,7 @@ async def test_register_doctor_already_exists(client):
     # Pre-populate the database with a doctor
     await Doctor(username="testuser", password="hashed_password").create()
     
-    response = client.post("/register", json={"username": "testuser", "password": "testpassword"})
+    response = client.post("/auth/register", json={"username": "testuser", "password": "testpassword"})
     assert response.status_code == 400
     assert response.json() == {"detail": "Username already registered"}
 
@@ -83,7 +84,7 @@ async def test_view_patients(client):
     await Patient(id="P002", name="Bob", city="B", age=40, gender="male", height=1.8, weight=80, doctor_id="test_doctor").create()
     await Patient(id="P003", name="Charlie", city="C", age=50, gender="male", height=1.7, weight=70, doctor_id="another_doctor").create()
 
-    response = client.get("/view")
+    response = client.get("/patients/view")
     assert response.status_code == 200
     data = response.json()
     # Should only return patients for the logged-in doctor
@@ -96,14 +97,14 @@ async def test_view_patients(client):
 async def test_view_patient_found(client):
     await Patient(id="P001", name="Alice", city="A", age=30, gender="female", height=1.6, weight=60, doctor_id="test_doctor").create()
     
-    response = client.get("/patient/P001")
+    response = client.get("/patients/patient/P001")
     assert response.status_code == 200
     assert response.json()["name"] == "Alice"
 
 
 @pytest.mark.asyncio
 async def test_view_patient_not_found(client):
-    response = client.get("/patient/P001")
+    response = client.get("/patients/patient/P001")
     assert response.status_code == 404
     assert response.json() == {"detail": "Patient not found"}
 
@@ -112,7 +113,7 @@ async def test_view_patient_not_found(client):
 async def test_view_patient_wrong_doctor(client):
     await Patient(id="P001", name="Alice", city="A", age=30, gender="female", height=1.6, weight=60, doctor_id="another_doctor").create()
     
-    response = client.get("/patient/P001")
+    response = client.get("/patients/patient/P001")
     assert response.status_code == 404
     assert response.json() == {"detail": "Patient not found"}
 
@@ -120,7 +121,7 @@ async def test_view_patient_wrong_doctor(client):
 @pytest.mark.asyncio
 async def test_create_patient_success(client):
     patient_data = {"id": "P003", "name": "Charlie", "city": "New City", "age": 45, "gender": "male", "height": 1.8, "weight": 80}
-    response = client.post("/create", json=patient_data)
+    response = client.post("/patients/create", json=patient_data)
     
     assert response.status_code == 201
     assert response.json() == {'message': 'patient created successfully'}
@@ -137,7 +138,7 @@ async def test_create_patient_already_exists(client):
     await Patient(id="P001", name="Alice", city="A", age=30, gender="female", height=1.6, weight=60, doctor_id="test_doctor").create()
     
     patient_data = {"id": "P001", "name": "Alice", "city": "Testville", "age": 30, "gender": "female", "height": 1.6, "weight": 60}
-    response = client.post("/create", json=patient_data)
+    response = client.post("/patients/create", json=patient_data)
     assert response.status_code == 400
     assert response.json() == {"detail": "Patient already exists"}
 
@@ -146,7 +147,7 @@ async def test_create_patient_already_exists(client):
 async def test_update_patient_success(client):
     await Patient(id="P001", name="Alice", city="Old City", age=30, gender="female", height=1.6, weight=60, doctor_id="test_doctor").create()
     
-    response = client.put("/edit/P001", json={"city": "New City"})
+    response = client.put("/patients/edit/P001", json={"city": "New City"})
     assert response.status_code == 200
     assert response.json() == {'message': 'patient updated'}
     
@@ -159,7 +160,7 @@ async def test_update_patient_success(client):
 async def test_delete_patient_success(client):
     await Patient(id="P001", name="Alice", city="Testville", age=30, gender="female", height=1.6, weight=60, doctor_id="test_doctor").create()
     
-    response = client.delete("/delete/P001")
+    response = client.delete("/patients/delete/P001")
     assert response.status_code == 200
     assert response.json() == {'message': 'patient deleted'}
     
