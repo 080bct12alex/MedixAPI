@@ -15,18 +15,22 @@ class Patient(Document):
     city: str = Field(..., description='City where the patient is living')
     age: int = Field(..., gt=0, lt=120, description='Age of the patient')
     gender: Literal['male', 'female', 'others'] = Field(..., description='Gender of the patient')
-    height: float = Field(..., gt=0, description='Height of the patient in mtrs')
-    weight: float = Field(..., gt=0, description='Weight of the patient in kgs')
+    height: Optional[float] = Field(default=None, gt=0, description='Height of the patient in mtrs')
+    weight: Optional[float] = Field(default=None, gt=0, description='Weight of the patient in kgs')
     doctor_id: str = Field(..., description='ID of the doctor')
     diagnoses_history: List[DiagnosisEntry] = Field(default_factory=list, description='List of diagnoses for the patient')
 
     @computed_field
-    def bmi(self) -> float:
+    def bmi(self) -> Optional[float]:
+        if self.weight is None or self.height is None or self.height == 0:
+            return None
         bmi = round(self.weight / (self.height ** 2), 2)
         return bmi
 
     @computed_field
-    def verdict(self) -> str:
+    def verdict(self) -> Optional[str]:
+        if self.bmi is None:
+            return None
         if self.bmi < 18.5:
             return 'Underweight'
         elif self.bmi < 25:
@@ -60,8 +64,8 @@ class PatientCreate(BaseModel):
     city: str = Field(..., description='City where the patient is living')
     age: int = Field(..., gt=0, lt=120, description='Age of the patient')
     gender: Literal['male', 'female', 'others'] = Field(..., description='Gender of the patient')
-    height: float = Field(..., gt=0, description='Height of the patient in mtrs')
-    weight: float = Field(..., gt=0, description='Weight of the patient in kgs')
+    height: Optional[float] = Field(default=None, gt=0, description='Height of the patient in mtrs')
+    weight: Optional[float] = Field(default=None, gt=0, description='Weight of the patient in kgs')
     diagnoses_history: Optional[List[DiagnosisEntry]] = Field(default_factory=list, description='List of diagnoses for the patient')
 
 
