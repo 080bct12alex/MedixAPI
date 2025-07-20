@@ -65,7 +65,7 @@ This is the deployed version of the Patient Management System API, fully functio
         
     -   Ruff (linter/formatter)
         
-    -   Pytest (test framework)
+    -   Pytest (unit testing framework)
     
     -  GitHub Actions ( CI/CD Integration )
     
