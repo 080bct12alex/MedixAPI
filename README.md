@@ -1,10 +1,8 @@
 # 🧠 Patient Management System  (FastAPI Learning Project)
 
-This is  project designed to learn how to build RESTful APIs using **FastAPI**. It simulates a real-world use case of managing patient health records, including BMI calculations and automatic health verdicts. Data is stored in MongoDB
+A **FastAPI**-powered RESTful backend simulates a real-world use case of managing patient health records, including BMI calculations and automatic health verdicts with doctor-based data isolation, and a secure JWT-based login system — ideal for **Flask transitioning to FastAPI** or learning  scalable modern Python APIs development.
 
-
-📌 This project is ideal for those transitioning from **Flask to FastAPI**, or learning modern Python API development.
-
+    📌  began as a **FastAPI** learning journey Project but evolved into a production-ready backend systemproject.
 ---
 
 

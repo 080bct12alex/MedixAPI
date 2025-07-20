@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from auth import create_access_token, verify_password, get_password_hash
+from services.auth import create_access_token, verify_password, get_password_hash
 from models.doctor import Doctor, DoctorCreate
 
 router = APIRouter()
