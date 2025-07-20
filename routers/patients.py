@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Path, HTTPException, Query, Depends
 from fastapi.responses import JSONResponse
 import pymongo
+from datetime import date, timedelta
+from typing import Optional
 
 from services.auth import get_current_doctor
 from models.patient import Patient, PatientUpdate, PatientCreate
@@ -20,9 +22,9 @@ async def view_patient(patient_id: str = Path(..., description='ID of the patien
     return patient
 
 @router.get("/sort")
-async def sort_patients(sort_by: str = Query(..., description='Sort on the basis of height, weight, age or _id'), order: str = Query('asc', description='sort in asc or desc order'), current_doctor: str = Depends(get_current_doctor)):
+async def sort_patients(sort_by: str = Query(..., description='Sort on the basis of_id,latest_diagnosis_date, latest_condition, height, weight, age  '), order: str = Query('asc', description='sort in asc or desc order'), current_doctor: str = Depends(get_current_doctor)):
 
-    valid_fields = ['height', 'weight', 'age', '_id']
+    valid_fields = ['height', 'weight', 'age', '_id', 'latest_diagnosis_date', 'latest_condition']
 
     if sort_by not in valid_fields:
         raise HTTPException(status_code=400, detail=f'Invalid field select from {valid_fields}')
@@ -35,6 +37,78 @@ async def sort_patients(sort_by: str = Query(..., description='Sort on the basis
     sorted_data = await Patient.find(Patient.doctor_id == current_doctor).sort((sort_by,sort_order)).to_list()
 
     return sorted_data
+
+@router.get("/group_by_disease")
+async def group_patients_by_disease(current_doctor: str = Depends(get_current_doctor)):
+    pipeline = [
+        {"$match": {"doctor_id": current_doctor}},  # Filter by current doctor
+        {"$unwind": "$diagnoses_history"},  # Deconstruct the diagnoses_history array
+        {"$group": {
+            "_id": "$diagnoses_history.disease",  # Group by disease name
+            "patients": {"$push": {
+                "id": "$id",
+                "name": "$name",
+                "city": "$city",
+                "age": "$age",
+                "gender": "$gender",
+                "height": "$height",
+                "weight": "$weight",
+                "latest_condition": "$latest_condition",
+                "latest_diagnosis_date": "$latest_diagnosis_date",
+                "diagnosis_details": "$diagnoses_history" # Include specific diagnosis details
+            }}
+        }}
+    ]
+    
+    grouped_data = await Patient.aggregate(pipeline).to_list()
+    return grouped_data
+
+@router.get("/group_by_condition")
+async def group_patients_by_condition(current_doctor: str = Depends(get_current_doctor)):
+    pipeline = [
+        {"$match": {"doctor_id": current_doctor}},  # Filter by current doctor
+        {"$unwind": "$diagnoses_history"},  # Deconstruct the diagnoses_history array
+        {"$group": {
+            "_id": "$diagnoses_history.condition",  # Group by condition
+            "patients": {"$push": {
+                "id": "$id",
+                "name": "$name",
+                "city": "$city",
+                "age": "$age",
+                "gender": "$gender",
+                "height": "$height",
+                "weight": "$weight",
+                "latest_condition": "$latest_condition",
+                "latest_diagnosis_date": "$latest_diagnosis_date",
+                "diagnosis_details": "$diagnoses_history" # Include specific diagnosis details
+            }}
+        }}
+    ]
+    
+    grouped_data = await Patient.aggregate(pipeline).to_list()
+    return grouped_data
+
+@router.get("/filter")
+async def filter_patients(
+    disease_name: Optional[str] = Query(None, description="Filter by disease name"),
+    condition: Optional[str] = Query(None, description="Filter by disease condition"),
+    diagnosed_after_months: Optional[int] = Query(None, description="Filter by diagnoses in the last X months"),
+    current_doctor: str = Depends(get_current_doctor)
+):
+    query = Patient.find(Patient.doctor_id == current_doctor)
+
+    if disease_name:
+        query = query.find({"diagnoses_history.disease": disease_name})
+    
+    if condition:
+        query = query.find({"diagnoses_history.condition": condition})
+
+    if diagnosed_after_months is not None:
+        from_date = date.today() - timedelta(days=diagnosed_after_months * 30) # Approximate months
+        query = query.find({"diagnoses_history.diagnosis_on": {"$gte": from_date}})
+
+    filtered_data = await query.to_list()
+    return filtered_data
 
 @router.post("/create")
 async def create_patient(patient_data: PatientCreate, current_doctor: str = Depends(get_current_doctor)):

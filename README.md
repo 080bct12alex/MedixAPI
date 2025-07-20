@@ -36,10 +36,16 @@ This is the deployed version of the Patient Management System API, fully functio
     
       -   🗑 Delete a patient
     
-      -   📊 Sort by `height`, `weight`, or `BMI`
-    
+      -   📊 Sort by   `_id`, `latest_diagnosis_date`, `latest_condition`, `age`,`height`, `weight`.
+
       -   �� Automatically calculate BMI and assign a health category (`Underweight`, `Normal`, `Obese`)
-    
+     - 🩺 Diagnosis Tracking
+       - Track each patient’s medical diagnosis history .
+     - 📚 Diagnosis-Based Grouping
+       - Group patients by `disease` , `condition` .
+
+     - Filter patients based on  `Disease name` , `Condition` , `Diagnosis` `date`. 
+       
 
 ----------
 
@@ -71,3 +77,4 @@ This is the deployed version of the Patient Management System API, fully functio
     
         
 -   **Frontend:** Next.js (integrated)
+
