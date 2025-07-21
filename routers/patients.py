@@ -44,7 +44,7 @@ async def group_patients_by_disease(current_doctor: str = Depends(get_current_do
         {"$match": {"doctor_id": current_doctor}},  # Filter by current doctor
         {"$unwind": "$diagnoses_history"},  # Deconstruct the diagnoses_history array
         {"$group": {
-            "_id": "$diagnoses_history.disease",  # Group by disease name
+            "_id": {"$toLower": "$diagnoses_history.disease"},  # Normalize to lowercase  # Group by disease name
             "patients": {"$push": {
                 "id": "$_id",
                 "name": "$name",
@@ -69,7 +69,7 @@ async def group_patients_by_condition(current_doctor: str = Depends(get_current_
         {"$match": {"doctor_id": current_doctor}},  # Filter by current doctor
         {"$unwind": "$diagnoses_history"},  # Deconstruct the diagnoses_history array
         {"$group": {
-            "_id": "$diagnoses_history.condition",  # Group by condition
+             "_id": {"$toLower": "$diagnoses_history.condition"},  # Normalize to lowercase  # Group by condition
             "patients": {"$push": {
                 "id": "$_id",
                 "name": "$name",
